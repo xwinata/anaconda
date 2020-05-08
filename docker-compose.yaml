@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+    postgres_db:
+      image: postgres
+      restart: always
+      environment:
+        POSTGRES_USER: user
+        POSTGRES_PASSWORD: pass
+        POSTGRES_DB: anaconda_db
+      ports:
+        - 5432:5432
+      container_name: postgres_db
+
+    anaconda:
+      container_name: anaconda
+      build: .
+      volumes:
+        - ./:/Work/flask_restful
+      ports:
+        - 5000:5000
+      environment:
+        POSTGRES_URL: postgres_db
+        POSTGRES_DB: anaconda_db
+        POSTGRES_USER: user
+        POSTGRES_PASS: pass
+      depends_on:
+        - postgres_db
+
+networks:
+  default:
+    external:
+      name: docker_local
